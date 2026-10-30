@@ -1,0 +1,47 @@
+:root{font-family:Tahoma,Arial,sans-serif;color:#182230;background:#f3f6fb}*{box-sizing:border-box}body{margin:0}.top{background:#172554;color:white;padding:22px 16px}.top h1{margin:0 0 6px;font-size:25px}.top p{margin:0;color:#dbeafe}.wrap{max-width:1050px;margin:auto;padding:16px}.notice{background:#fff7df;border:1px solid #f2d48a;border-radius:12px;padding:12px;margin-bottom:14px;font-size:13px}.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:10px}.card,.panel{background:white;border:1px solid #e4e9f1;border-radius:14px;padding:15px;box-shadow:0 2px 8px #14213d08}.label{font-size:13px;color:#64748b}.value{font-size:23px;font-weight:bold;margin-top:8px}.tabs{display:flex;gap:8px;flex-wrap:wrap;margin:16px 0}.tabs button,button{border:0;border-radius:9px;padding:10px 14px;background:#1d4ed8;color:white;font-weight:bold;cursor:pointer}.tabs button{background:#e2e8f0;color:#1e293b}.tabs button.active{background:#1d4ed8;color:white}.panel{margin-top:12px}h2{font-size:19px;margin:0 0 14px}form{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:9px}input,select{width:100%;padding:11px;border:1px solid #cbd5e1;border-radius:8px;background:white}form button{grid-column:1/-1}table{width:100%;border-collapse:collapse;margin-top:12px;font-size:13px}th,td{text-align:right;padding:10px;border-bottom:1px solid #e5e7eb}th{color:#475569;background:#f8fafc}.muted{color:#64748b;font-size:13px}.hidden{display:none}.scroll{overflow:auto} 
+
+كووول مووول 📱
+
+إدارة الصيانة والمخزون والمبيعات — نموذج أولي
+
+تنبيه مهم: دي نسخة تجريبية تحفظ البيانات على نفس الجهاز والمتصفح فقط. لم يتم ربطها بقاعدة بيانات سحابية أو حسابات دخول؛ لذلك لن تتزامن حاليًا بين موبايلك وموبايل عمرو.
+
+إجمالي المبيعات المسجلة
+
+0 ج.م
+
+عدد أصناف المخزون
+
+0
+
+أجهزة تحت الصيانة
+
+0
+
+الرئيسيةالمخزونالمبيعاتالصيانة 
+
+ملخص النشاط
+
+ابدأ بإضافة قطع الغيار أو تسجيل عملية بيع أو جهاز صيانة. الأرقام بالأعلى تتحدث تلقائيًا.
+
+لا توجد عمليات مسجلة بعد.
+
+إضافة صنف للمخزون
+
+حفظ الصنف
+
+القطعةالموديلشراءبيعالكمية
+
+تسجيل عملية بيع
+
+تسجيل البيع
+
+البيانالمبلغالتاريخ
+
+تسجيل جهاز صيانة
+
+تحت الصيانةجاهزتم التسليمحفظ طلب الصيانة
+
+العميلالجهازالعطلالحالة
+
+const get=k=>JSON.parse(localStorage.getItem('km_'+k)||'[]'),put=(k,v)=>localStorage.setItem('km_'+k,JSON.stringify(v)); function render(){let s=get('stock'),v=get('sales'),r=get('repairs');document.getElementById('salesTotal').textContent=v.reduce((a,x)=>a+Number(x.amount),0).toFixed(2)+' ج.م';document.getElementById('stockCount').textContent=s.length;document.getElementById('repairCount').textContent=r.filter(x=>x.status==='تحت الصيانة').length; document.getElementById('stockRows').innerHTML=s.map(x=>`<tr><td>${esc(x.name)}</td><td>${esc(x.model)}</td><td>${x.buy}</td><td>${x.sell}</td><td>${x.qty}</td></tr>`).join('');document.getElementById('salesRows').innerHTML=v.map(x=>`<tr><td>${esc(x.item)}</td><td>${x.amount} ج.م</td><td>${x.date}</td></tr>`).join('');document.getElementById('repairRows').innerHTML=r.map(x=>`<tr><td>${esc(x.customer)}</td><td>${esc(x.device)}</td><td>${esc(x.fault)}</td><td>${esc(x.status)}</td></tr>`).join('');document.getElementById('recent').textContent=`عمليات البيع: ${v.length} — أصناف المخزون: ${s.length} — طلبات الصيانة: ${r.length}`;} function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));} document.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>{document.querySelectorAll('[data-tab]').forEach(x=>x.classList.remove('active'));b.classList.add('active');['home','stock','sales','repairs'].forEach(id=>document.getElementById(id).classList.toggle('hidden',id!==b.dataset.tab));}); function bind(id,key){document.getElementById(id).onsubmit=e=>{e.preventDefault();let obj=Object.fromEntries(new FormData(e.target));put(key,[...get(key),obj]);e.target.reset();render();};}bind('stockForm','stock');bind('saleForm','sales');bind('repairForm','repairs');document.querySelector('#saleForm [name=date]').value=new Date().toISOString().slice(0,10);render(); 
